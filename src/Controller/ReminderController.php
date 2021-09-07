@@ -13,9 +13,9 @@ use Symfony\Component\Routing\Annotation\Route;
 class ReminderController extends AbstractController
 {
     /**
-     * @Route("/reminders/show")
+     * @Route("/reminders")
      */
-    public function show(ReminderRepository $reminderRepository)
+    public function reminders(ReminderRepository $reminderRepository)
     {
         $reminders = $reminderRepository->transformAll();
         return new JsonResponse($reminders);
