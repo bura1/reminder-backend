@@ -3,8 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Reminder;
+use App\Repository\ReminderRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -13,9 +15,10 @@ class ReminderController extends AbstractController
     /**
      * @Route("/reminders")
      */
-    public function reminders()
+    public function reminders(ReminderRepository $reminderRepository)
     {
-        //return $this->respond(["aaa" => "bbb"]);
+        $reminders = $reminderRepository->transformAll();
+        return new JsonResponse($reminders);
     }
 
     /**
@@ -32,5 +35,13 @@ class ReminderController extends AbstractController
         $entityManager->flush();
 
         return new Response(sprintf('Reminder text is ' . $reminder->getText()));
+    }
+
+    /**
+     * @Route("/reminders/show/{id}")
+     */
+    public function show($id, MarkdownHelper $markdownHelper, EntityManagerInterface $entityManager)
+    {
+
     }
 }

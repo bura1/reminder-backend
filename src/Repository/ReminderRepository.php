@@ -19,6 +19,29 @@ class ReminderRepository extends ServiceEntityRepository
         parent::__construct($registry, Reminder::class);
     }
 
+    public function transform(Reminder $reminder)
+    {
+        return [
+            'id'    => (int) $reminder->getId(),
+            'slug' => (int) $reminder->getSlug(),
+            'text' => (string) $reminder->getText(),
+            //'date_created' => (date) $reminder->getCreatedOnDate(),
+            //'category_id' => (int) $reminder->getCategory()
+        ];
+    }
+
+    public function transformAll()
+    {
+        $reminders = $this->findAll();
+        $remindersArray = [];
+
+        foreach ($reminders as $reminder) {
+            $remindersArray[] = $this->transform($reminder);
+        }
+
+        return $remindersArray;
+    }
+
     // /**
     //  * @return Reminder[] Returns an array of Reminder objects
     //  */
