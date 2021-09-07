@@ -13,9 +13,9 @@ use Symfony\Component\Routing\Annotation\Route;
 class ReminderController extends AbstractController
 {
     /**
-     * @Route("/reminders")
+     * @Route("/reminders/show")
      */
-    public function reminders(ReminderRepository $reminderRepository)
+    public function show(ReminderRepository $reminderRepository)
     {
         $reminders = $reminderRepository->transformAll();
         return new JsonResponse($reminders);
@@ -35,13 +35,5 @@ class ReminderController extends AbstractController
         $entityManager->flush();
 
         return new Response(sprintf('Reminder text is ' . $reminder->getText()));
-    }
-
-    /**
-     * @Route("/reminders/show/{id}")
-     */
-    public function show($id, MarkdownHelper $markdownHelper, EntityManagerInterface $entityManager)
-    {
-
     }
 }
