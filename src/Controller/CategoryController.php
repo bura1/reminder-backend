@@ -13,8 +13,10 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class CategoryController extends AbstractController
 {
+    protected $statusCode = 200;
+
     /**
-     * @Route("/categories")
+     * @Route("/categories", methods="GET")
      */
     public function categories(CategoryRepository $categoryRepository)
     {
@@ -23,17 +25,36 @@ class CategoryController extends AbstractController
     }
 
     /**
-     * @Route("/categories/new")
+     * @Route("/categories/new/{name}", methods="POST")
      */
-    public function new(EntityManagerInterface $entityManager)
+    public function new($name, EntityManagerInterface $entityManager, CategoryRepository $categoryRepository)
     {
         $category = new Category();
-        $category->setName("Kategorija 4")
-            ->setSlug("kategorija-4");
+        $category->setName($name)
+            ->setSlug(strtolower($name));
 
         $entityManager->persist($category);
         $entityManager->flush();
 
-        return new Response(sprintf('New Category is ' . $category->getName()));
+        return $this->respondCreated($categoryRepository->transform($category));
+    }
+
+    public function respondCreated($data = [])
+    {
+        return $this->setStatusCode(201)->respond($data);
+    }
+    protected function setStatusCode($statusCode)
+    {
+        $this->statusCode = $statusCode;
+
+        return $this;
+    }
+    public function respond($data, $headers = [])
+    {
+        return new JsonResponse($data, $this->getStatusCode(), $headers);
+    }
+    public function getStatusCode()
+    {
+        return $this->statusCode;
     }
 }
