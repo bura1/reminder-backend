@@ -30,8 +30,9 @@ class CategoryController extends AbstractController
     public function new($name, EntityManagerInterface $entityManager, CategoryRepository $categoryRepository)
     {
         $category = new Category();
-        $category->setName($name)
-            ->setSlug(strtolower($name));
+        $slug = str_replace(' ', '_', strtolower($name));
+        $category->setName(substr($name, 0, 250))
+            ->setSlug(substr($slug, 0, 250));
 
         $entityManager->persist($category);
         $entityManager->flush();
