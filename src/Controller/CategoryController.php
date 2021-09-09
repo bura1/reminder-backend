@@ -40,20 +40,36 @@ class CategoryController extends AbstractController
         return $this->respondCreated($categoryRepository->transform($category));
     }
 
+    /**
+     * @Route("/categories/delete/{id}", methods="DELETE")
+     */
+    public function delete($id, EntityManagerInterface $entityManager, CategoryRepository $categoryRepository)
+    {
+        $category = $categoryRepository->findOneBy(['id' => $id]);
+
+        $entityManager->remove($category);
+        $entityManager->flush();
+
+        return new JsonResponse(['status' => 'Category deleted'], Response::HTTP_NO_CONTENT);
+    }
+
     public function respondCreated($data = [])
     {
         return $this->setStatusCode(201)->respond($data);
     }
+
     protected function setStatusCode($statusCode)
     {
         $this->statusCode = $statusCode;
 
         return $this;
     }
+
     public function respond($data, $headers = [])
     {
         return new JsonResponse($data, $this->getStatusCode(), $headers);
     }
+
     public function getStatusCode()
     {
         return $this->statusCode;
