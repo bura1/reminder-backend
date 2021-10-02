@@ -13,12 +13,15 @@ use Symfony\Component\Routing\Annotation\Route;
 class ReminderController extends AbstractController
 {
     /**
-     * @Route("/reminders")
+     * @Route("/reminders/{category_id}")
      */
-    public function reminders(ReminderRepository $reminderRepository)
+    public function reminders(ReminderRepository $reminderRepository, $category_id)
     {
-        $reminders = $reminderRepository->transformAll();
-        return new JsonResponse($reminders);
+        /*$remindersById = $reminderRepository->findOneBy(
+            ["id" => 1]
+        );*/
+        $remindersById = $reminderRepository->findAll();
+        return new JsonResponse($remindersById);
     }
 
     /**
